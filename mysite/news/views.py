@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect
-from .models import Articles
+from .models import Articles, Comment
 from .forms import ArticlesForm
+from rest_framework import generics, permissions
 from django.views.generic import DetailView, UpdateView, DeleteView
+from . import serializers
+from .permisisions import IsOwnerOrReadOnly
+
 
 def news_home(request):
     news = Articles.objects.order_by('-date')
@@ -43,3 +47,30 @@ def create(request):
     }
 
     return render(request, 'news/create.html', data)
+
+class ArticlesList(generics.ListCreateAPIView):
+    queryset = Articles.objects.all()
+    serializer_class = serializers.ArticlesSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class ArticlesDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Articles.objects.all()
+    serializer_class = serializers.ArticlesSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+class CommentList(generics.ListCreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = serializers.CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = serializers.CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
