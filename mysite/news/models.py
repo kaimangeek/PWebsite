@@ -18,11 +18,10 @@ class Articles(models.Model):
     class Meta:
         verbose_name = 'Новость'
         verbose_name_plural = 'Новости'
-        # ordering = ['created']
 
 class Comment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
-    body = models.TextField(blank=False)
+    body = models.CharField(max_length=50, blank=False)
     owner = models.ForeignKey('auth.User', related_name='comments', on_delete=models.CASCADE)
     articles = models.ForeignKey('Articles', related_name='comments', on_delete=models.CASCADE)
 

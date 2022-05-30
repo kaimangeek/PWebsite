@@ -1,7 +1,11 @@
 {% load static %}
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
+    {% if user.is_authenticated %}
+        <p>Logged in as {{user.get_username}}</p>
+    {% endif %}
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -22,6 +26,8 @@
             <a href="{% url 'news_home' %}"><li><i class="fas fa-newspaper"></i> Статьи</li></a>
             <a href="{% url 'create' %}"><li><i class="fas fa-address-book"></i> Контакты</li></a>
             <a href="{% url 'create' %}"><li><button class="btn btn-info"><i class="fas fa-plus"></i> Добавить статью</button></li></a>
+            <a href="{% url 'login' %}"><li><button class="btn btn-info"><i class="fas fa-right-to-bracket"></i> Войти</button></li></a>
+            <a href="{% url 'logout' %}?next={{request.path}}"><li><button class="btn btn-danger"><i class="fas fa-right-to-bracket"></i> Выйти</button></li></a>
         </ul>
     </aside>
     <main>
